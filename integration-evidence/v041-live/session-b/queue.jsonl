@@ -1,0 +1,6 @@
+"/lastgood check"
+"/lastgood setup opens calculator.py"
+"/lastgood check"
+"Add a subtract(a, b) function that returns a - b to calculator.py. Use your file editing tool only. Do not change lastgood-config.json or any other file."
+"/lastgood status"
+"/quit"

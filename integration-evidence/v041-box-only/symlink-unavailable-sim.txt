@@ -1,0 +1,11 @@
+Simulation: Path.symlink_to raises OSError like Windows without symlink privilege.
+test_regression_symlink_escape_is_unknown (test_lastgood.TestContainmentAndBounds.test_regression_symlink_escape_is_unknown) ... skipped 'symlinks unavailable here (OSError)'
+test_sensitive_symlink_target_read_and_fingerprint_excluded (test_audit_changeview.TestChangeviewAudit.test_sensitive_symlink_target_read_and_fingerprint_excluded) ... skipped 'symlinks unavailable here (OSError)'
+test_ordinary_in_project_symlink_remains_supported (test_audit_changeview.TestChangeviewAudit.test_ordinary_in_project_symlink_remains_supported) ... skipped 'symlinks unavailable here (OSError)'
+test_missing_binary_and_escape_no_delta (test_changeview.TestChangeEvidence.test_missing_binary_and_escape_no_delta) ... skipped 'symlinks unavailable here (OSError)'
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.021s
+
+OK (skipped=4)
+skipped 4 failures 0 errors 0

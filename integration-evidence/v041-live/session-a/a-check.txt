@@ -1,0 +1,17 @@
+❯ /lastgood check
+ 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ctx -- · [░░░░░░░░░░] -- · 3s · ⏲ 0s · ~                                                              / commands · @ files · ! shell ❯ Type / to browse commands, or Ctrl+P for the palette
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ctx -- · [░░░░░░░░░░] -- · 3s · ⏲ 0s · ~                                                              / commands · @ files · ! shell 
+ 
+⚙️  /lastgood check
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ Type / to browse commands, or Ctrl+P for the palette
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ctx -- · [░░░░░░░░░░] -- · 3s · ⏲ 0s · ~                                                              / commands · @ files · ! shell Tested step #1: UNKNOWN
+  Setup problem: LastGood refused to check here: <TEST_ROOT>/v041-live-20261109-142403/standin-home is your home folder, which is too broad to be one project. Start Hermes in a dedicated project folder (for example a new folder that holds only this project), then run /lastgood setup opens <file> and /lastgood check baseline.
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ Type / to browse commands, or Ctrl+P for the palette
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ctx -- · [░░░░░░░░░░] -- · 4s · ⏲ 0s · ~                                                              / commands · @ files · ! shell 

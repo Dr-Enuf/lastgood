@@ -1,0 +1,3 @@
+Omitted from the public repo (~292 KB). This file was the full TUI dump while a test-driver
+queued /lastgood status during the model spinner, then the real status. See b-status-readable.txt
+for the LastGood status/heartbeat lines (CALLBACKS_OBSERVED, #3 PASS after patch).

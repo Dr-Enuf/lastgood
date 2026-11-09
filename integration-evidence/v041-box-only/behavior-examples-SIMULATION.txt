@@ -1,0 +1,45 @@
+SIMULATION on box (no Hermes, no PC). Paths are synthetic.
+
+== A. Pure root classification (Windows + POSIX strings) ==
+'<WINDOWS_USER_HOME>'                            -> <WINDOWS_USER_HOME> is your home folder
+'C:\\'                                        -> C:\ is a drive root
+'<USER_HOME>'                                 -> <USER_HOME> is your home folder
+'/'                                           -> / is the filesystem root
+'<DESKTOP>'         -> <DESKTOP> is a shared personal folder (desktop), not one project
+'<WINDOWS_USER_HOME>\\projects\\calculator'      -> None
+
+== B. Session folder is the home folder: /lastgood check ==
+Tested step #1: UNKNOWN
+  Setup problem: LastGood refused to check here: <HOME> is your home folder, which is too broad to be one project. Start Hermes in a dedicated project folder (for example a new folder that holds only this project), then run /lastgood setup opens <file> and /lastgood check baseline.
+
+== B2. after 3 successful write_file hooks: records = 1
+   records after hooks = 1
+
+== B3. /lastgood status ==
+LastGood — <HOME>
+Runtime callbacks: CALLBACKS_OBSERVED (pre=0, post=3); config=TOO_BROAD; completed=UNKNOWN at 2026-11-09T14:54:53+00:00; attempt=2026-11-09T14:54:53+00:00; check_error=UNKNOWN; callback_error=none at never; last_hook=2026-11-09T14:54:53+00:00 tool=write_file; collection=no dropped updates observed; registration is not delivery proof
+Now: UNKNOWN (current)
+Setup problem: LastGood refused to check here: <HOME> is your home folder, which is too broad to be one project. Start Hermes in a dedicated project folder (for example a new folder that holds only this project), then run /lastgood setup opens <file> and /lastgood check baseline.
+  #1 UNKNOWN current checked via /lastgood
+LastGood step numbers are not Hermes checkpoint numbers.
+
+== C. Dedicated folder, invented config fields: /lastgood check ==
+Tested step #1: UNKNOWN
+  Setup problem: lastgood-config.json is not valid: check #1 has no "type" field. Accepted check types: file_opens {path}, text_present {path, text}, files_exist {paths}, url_loads {url, optional text}. Minimal valid lastgood-config.json: {"checks": [{"type": "file_opens", "path": "calculator.py"}]}. Easiest fix: run /lastgood setup opens <file> (or /lastgood setup words <file> <words>), or call the lastgood_setup tool, instead of writing the file by hand.
+
+== C2. Tool result returned to the model (lastgood_check) ==
+{
+ "tested_step": 2,
+ "result": "UNKNOWN",
+ "setup_source": "project",
+ "setup_error": "lastgood-config.json is not valid: check #1 has no \"type\" field. Accepted check types: file_opens {path}, text_present {path, text}, files_exist {paths}, url_loads {url, optional text}. Minimal valid lastgood-config.json: {\"checks\": [{\"type\": \"file_opens\", \"path\": \"calculator.py\"}]}. Easiest fix: run /lastgood setup opens <file> (or /lastgood setup words <file> <words>), or call the lastgood_setup tool, instead of writing the file by hand."
+}
+
+== C3. lastgood_setup with invented fields ==
+{"error": "lastgood_setup failed: ConfigError: check #1 has no \"type\" field. Nothing was saved. Accepted check types: file_opens {path}, text_present {path, text}, files_exist {paths}, url_loads {url, optional text}. Minimal valid lastgood-config.json: {\"checks\": [{\"type\": \"file_opens\", \"path\": \"calculator.py\"}]}. Easiest fix: run /lastgood setup opens <file> (or /lastgood setup words <file> <words>), or call the lastgood_setup tool, instead of writing the file by hand."}
+
+== D. Fix: /lastgood setup opens calculator.py then check ==
+Saved 1 check(s) to <PROJECT>/lastgood-config.json.
+Run /lastgood check to test the current files.
+Tested step #3: PASS
+  PASS    file_opens: calculator.py has no Python syntax errors.

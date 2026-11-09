@@ -1,0 +1,2 @@
+Omitted from the public repo (~449 KB raw Hermes TUI/PTY capture, mostly spinner and chrome).
+The LastGood outcomes are in ../RESULTS.txt and b-status-readable.txt.

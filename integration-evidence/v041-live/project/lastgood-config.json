@@ -1,0 +1,8 @@
+{
+  "checks": [
+    {
+      "type": "file_opens",
+      "path": "calculator.py"
+    }
+  ]
+}

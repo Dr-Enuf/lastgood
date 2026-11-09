@@ -1,0 +1,18 @@
+[
+  "<TEST_ROOT>/integration-20261107-1134/home/installs/5d84843bd80c30ab/environments/16a99e1393bb4f8db608203b95b846b5/venv/bin/python",
+  "-I",
+  "-c",
+  "import sys,runpy;sys.path.insert(0,'<USER_HOME>/.hermes/hermes-agent');sys._hermes_pin_default_home=True;import hermes_bootstrap;runpy.run_module('hermes_cli.main',run_name='__main__',alter_sys=True)",
+  "chat",
+  "--provider",
+  "custom",
+  "--base-url",
+  "http://127.0.0.1:11434/v1",
+  "--model",
+  "gemma4-12b-64k:latest",
+  "--checkpoints",
+  "--in",
+  "<TEST_ROOT>/v041-live-20261109-142403/project",
+  "--max-turns",
+  "5"
+]

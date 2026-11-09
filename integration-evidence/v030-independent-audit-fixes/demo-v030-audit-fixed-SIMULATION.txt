@@ -1,0 +1,13 @@
+=== LastGood STANDALONE SIMULATION (not a Hermes run) ===
+  #1 PASS    stale   baseline
+  #2 PASS    current after write_file
+  #3 FAIL    stale   after patch
+  #4 PASS    current after rollback
+blame        : Checks first failed at tested step #3 — “after patch”.
+what changed : Observed changes #2 → #3: Configured-string presence changed.
+  removed configured text in index.html: 555-0100
+Adjacent checked observations only; edits between them are unobserved. Not proof of cause.
+after rollback, before re-check: STALE: files or check setup changed since the last check; run a check
+now          : PASS (current)
+report       : /workspace/lastgood-changeview/audit-isolated-d6LL/project/demo-output/report.html
+SIMULATION RESULT: PASS

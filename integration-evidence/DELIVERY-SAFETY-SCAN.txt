@@ -1,0 +1,1 @@
+No user default config, credential/token files, pycache or real-looking credential patterns found. Synthetic test vectors remain only as documented test/audit data. Source hashes matched host-tested source. No universal secret-scan guarantee.

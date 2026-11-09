@@ -1,0 +1,9 @@
+..TERMINAL_CWD does not exist: <TEST_ROOT>/integration-20261107-1134/home/cache/scratch/lastgood-test-552jaexh/does-not-exist
+TERMINAL_CWD does not exist: <TEST_ROOT>/integration-20261107-1134/home/cache/scratch/lastgood-test-552jaexh/does-not-exist
+....................................<USER_HOME>/.hermes/tools/python-3.14.9+20261021-linux-x64/lib/python3.14/tempfile.py:538: ResourceWarning: Implicitly cleaning up <HTTPError 404: 'File not found'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+.....
+----------------------------------------------------------------------
+Ran 43 tests in 1.792s
+
+OK

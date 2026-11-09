@@ -1,0 +1,30 @@
+[INFO] HERMES_HOME: <TEST_ROOT>/integration-20261107-1134/home
+[INFO] project: <TEST_ROOT>/integration-20261107-1134/project
+[OK  ] import hermes_cli.plugins
+[OK  ] called hermes_cli.plugins.discover_plugins()
+[INFO] manager via get_plugin_manager: PluginManager
+[OK  ] tool registered: lastgood_check
+[OK  ] tool registered: lastgood_status
+[OK  ] tool registered: lastgood_blame
+[OK  ] tool registered: lastgood_report
+[OK  ] tool registered: lastgood_setup
+[INFO] built-in tool write_file present: True
+[INFO] built-in tool patch present: True
+[INFO] built-in tool edit_file present: False
+[INFO] built-in tool terminal present: False
+[OK  ] hook registered: pre_tool_call
+[OK  ] hook registered: post_tool_call
+[OK  ] slash command /lastgood registered
+[INFO] slash command /blame registered: True
+[INFO] observer status for write_file result '{"success": true}': ('ok', None, None)
+[INFO] observer status for write_file result '{"error": "boom"}': ('error', 'tool_error', 'boom')
+[INFO] observer status for write_file result 'plain text': ('ok', None, None)
+[OK  ] resolve_agent_cwd() is the project: <TEST_ROOT>/integration-20261107-1134/project
+[OK  ] plugin data dir is inside test HERMES_HOME: <TEST_ROOT>/integration-20261107-1134/home/plugin-data/lastgood
+[FAIL] good edit -> auto check PASS: ['PASS', 'FAIL', 'PASS']
+[OK  ] breaking edit -> auto check FAIL: ['PASS', 'FAIL', 'PASS', 'FAIL']
+[OK  ] record carries session/tool_call ids
+[FAIL] ledger correlates pre/post by tool_call_id: [{'category': 'message', 'level': 'irreversible', 'reason': 'a sent message cannot be un-sent', 'target': 'recipient domain(s): example.com', 'tool_name': 'send_email', 'status': 'blocked', 'attempted_at': '2026-11-07T16:39:43+00:00', 'session_id': 'harness-session', 'task_id': 'harness-task', 'turn_id': 'harness-turn', 'tool_call_id': 'h3', 'id': 1, 'updated_at': '2026-11-07T16:39:43+00:00'}, {'category': 'message', 'level': 'irreversible', 'reason': 'a sent message cannot be un-sent', 'target': 'recipient domain(s): example.com', 'tool_name': 'send_email', 'status': 'blocked', 'attempted_at': '2026-11-07T16:40:48+00:00', 'session_id': 'harness-session', 'task_id': 'harness-task', 'turn_id': 'harness-turn', 'tool_call_id': 'h3', 'id': 2, 'updated_at': '2026-11-07T16:40:48+00:00'}]
+[OK  ] ledger stores no raw arguments
+
+SUMMARY: SOME STEPS FAILED (see FAIL lines)

@@ -1,0 +1,5 @@
+SENSITIVE_SYMLINK PASS FAIL [{"path": "index.html", "text": "555-0100", "change": "removed"}]
+RETENTION records=122 compact=1042347 disk=1160201 limit=1048576
+QUOTED_ASSIGNMENT [{'schema': 1, 'path': 'index.html', 'text': '"api_key": "SYNTHETIC_SECRET_123456"', 'present': True}] stored=True
+FIXTURES /tmp/lastgood-v3-probe-h46egq3x
+UNPERSISTED_UNKNOWN_GAP gap_result=UNKNOWN gap_id=None next_changes=[{"path": "index.html", "text": "555-0100", "change": "removed"}]

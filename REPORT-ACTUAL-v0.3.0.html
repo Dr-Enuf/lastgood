@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>LastGood Proof Report</title>
+<style>body{font-family:system-ui,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem}
+.dot{display:inline-block;width:18px;height:18px;border-radius:50%;margin-right:6px}
+table{border-collapse:collapse;width:100%}td,th{border:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}
+.box{background:#f6f8fa;border:1px solid #ddd;border-radius:8px;padding:1rem;margin:.5rem 0}</style></head>
+<body><h1>LastGood Proof Report</h1>
+<p>Project: <TEST_ROOT>/v030-host-20261107-1352/project-live</p>
+<p><span class="dot" style="background:#2da44e" title="#1 baseline"></span><span class="dot" style="background:#cf222e" title="#2 after patch"></span><span class="dot" style="background:#2da44e" title="#3 after interactive rollback"></span></p>
+<div class="box"><b>Now:</b> Latest tested step #3: PASS, current.</div>
+<div class="box"><b>Verdict:</b> Checks first failed at tested step #2 — “after patch”. The last tested step that passed is #3. This is where failure was first observed in retained history, not proof of what caused it.<pre>Observed changes #1 → #2: Configured-string presence changed.
+  removed configured text in index.html: 555-0100
+Adjacent checked observations only; edits between them are unobserved. Not proof of cause.</pre></div>
+<p><small>“current” means the checked files and the check setup are byte-for-byte what was tested.
+“stale” means they changed since; rerun the checks. Web-page checks cannot be fingerprinted.
+LastGood numbers are its own tested-step numbers, not Hermes checkpoint numbers.</small></p>
+
+<h2>Tested steps</h2>
+<table><tr><th>#</th><th>Step</th><th>Result</th><th>Freshness</th><th>Trigger</th><th>Detail</th><th>When (UTC)</th></tr><tr><td>#1</td><td>baseline</td><td style="color:#2da44e"><b>PASS</b></td><td>current</td><td>command</td><td>file_opens: PASS — index.html still has HTML page markers (not a browser render).; text_present: PASS — “Sunny Day Bakery” is in index.html (anywhere in the file, including hidden markup).; text_present: PASS — “555-0100” is in index.html (anywhere in the file, including hidden markup).</td><td>2026-11-07T18:58:47+00:00</td></tr><tr><td>#2</td><td>after patch</td><td style="color:#cf222e"><b>FAIL</b></td><td>stale</td><td>auto</td><td>file_opens: PASS — index.html still has HTML page markers (not a browser render).; text_present: PASS — “Sunny Day Bakery” is in index.html (anywhere in the file, including hidden markup).; text_present: FAIL — “555-0100” is no longer in index.html.</td><td>2026-11-07T18:59:48+00:00</td></tr><tr><td>#3</td><td>after interactive rollback</td><td style="color:#2da44e"><b>PASS</b></td><td>current</td><td>command</td><td>file_opens: PASS — index.html still has HTML page markers (not a browser render).; text_present: PASS — “Sunny Day Bakery” is in index.html (anywhere in the file, including hidden markup).; text_present: PASS — “555-0100” is in index.html (anywhere in the file, including hidden markup).</td><td>2026-11-07T19:00:37+00:00</td></tr></table>
+<h2>Recognised tool calls a file rollback won't undo</h2>
+<p><small>Status comes from Hermes' tool-call hooks: “succeeded” means the tool reported success, not that LastGood verified the real-world effect. Raw arguments are never stored.</small></p>
+<table><tr><th>Kind</th><th>Tool</th><th>Status</th><th>Target</th><th>Why</th><th>When (UTC)</th></tr><tr><td colspan="6">LastGood recognised no such tool calls. That does not prove none happened.</td></tr></table>
+</body></html>

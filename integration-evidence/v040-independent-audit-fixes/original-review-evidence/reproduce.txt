@@ -1,0 +1,5 @@
+INCOMPLETE_STORAGE_PROBE {"elapsed": 0.12, "cleanup_entered": true, "cleanup_still_blocked": true, "diagnostic_result": "PASS", "storage": {"result": "PASS", "history": "READABLE_OR_EMPTY"}, "active_probes": 1}
+RETURNED_AFTER_CLEANUP_FAILURE {"result": "PASS", "history": "READABLE_OR_EMPTY"}
+CALLBACK_ERROR_STATUS {"recorded_callback_error": {"time": "2026-11-07T19:19:43+00:00", "type": "PermissionError"}, "slash_line": "Runtime callbacks: CALLBACKS_OBSERVED (pre=1, post=0); config=VALID; completed=UNOBSERVED at never; attempt=never; error=none; registration is not delivery proof"}
+STATUS_DISK_UNCHANGED True
+FIXTURES /tmp/lastgood-v4-probe-q2zpuchl

@@ -1,0 +1,1 @@
+{"checks":[{"path":"index.html","type":"file_opens"},{"path":"index.html","text":"Sunny Day Bakery","type":"text_present"},{"path":"index.html","text":"555-0100","type":"text_present"}]}

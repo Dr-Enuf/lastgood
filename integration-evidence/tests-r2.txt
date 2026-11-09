@@ -1,0 +1,7 @@
+...TERMINAL_CWD does not exist: <TEST_ROOT>/integration-20261107-1134/home/cache/scratch/lastgood-test-hv2qhent/does-not-exist
+TERMINAL_CWD does not exist: <TEST_ROOT>/integration-20261107-1134/home/cache/scratch/lastgood-test-hv2qhent/does-not-exist
+..........................................
+----------------------------------------------------------------------
+Ran 45 tests in 2.219s
+
+OK

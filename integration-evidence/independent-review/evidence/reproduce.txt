@@ -1,0 +1,8 @@
+CONFIG_DELETION PASS -> FAIL -> PASS source=default
+URL_CHANGED PASS status=PASS (current) requests_since_change=0
+URL_SECRET_IN_REPORT True
+URL_TRUNCATION FAIL
+TOTAL_BUDGET budget=.02 elapsed=0.352 PASS
+CROSS_PROJECT_EDIT A=PASS (current) B_records=0
+DRAFT_CLASSIFICATION {'category': 'message', 'level': 'irreversible', 'reason': 'a sent message cannot be un-sent', 'target': None}
+ALL_FIXTURES /tmp/lastgood-audit-repro-7azlplui

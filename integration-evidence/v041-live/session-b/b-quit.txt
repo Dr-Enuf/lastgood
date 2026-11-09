@@ -1,0 +1,18 @@
+❯ /quit
+ 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ~13.6K/65.5K · [██░░░░░░░░] ~21% · ◎ 80.2% · ◷ 4.8s · ↑ 62 t/s · 28s · ⏲ 25s · ✓ 0s · …42403/project  / commands · @ files · ! shell 
+⚙️  /quit
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────── Add a subtract(a, b) function that returns a… ─
+❯ Summarize what's in this folder
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ~13.6K/65.5K · [██░░░░░░░░] ~21% · ◎ 80.2% · ◷ 4.8s · ↑ 62 t/s · 29s · ⏲ 25s · ✓ 1s · …42403/project  / commands · @ files · ! shell Shutting down… (finalizing session)
+
+Resume this session with:
+  hermes --resume local-2881097a1b5fa734e0192e4898bfa48ea30d4c98ab15e3321253f74ee8fca6c0
+  hermes -c "Add a subtract(a, b) function that returns a…"
+
+Session:        local-2881097a1b5fa734e0192e4898bfa48ea30d4c98ab15e3321253f74ee8fca6c0
+Title:          Add a subtract(a, b) function that returns a…
+Duration:       28s
+Messages:       10 (1 user, 8 tool calls)

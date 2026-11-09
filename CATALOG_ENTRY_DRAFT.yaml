@@ -1,0 +1,49 @@
+# v0.4.1 (Nov 9, 2026): host-validated and live-tested (doctor 5 tools/2 hooks, validate 15/15,
+# harness PASS, 114 tests; native Windows 114/0 fail/4 symlink skips). Live PTY: TOO_BROAD,
+# invalid-config guidance, setup+check PASS, one local-model patch auto-check PASS.
+# Test-driver queued status during the model spinner; owner-restart still host-untested.
+# Plugin source set f5454db89818c3f80e9ece7d788f816ca7ee059136abea85edb699dd9df94282. Draft only.
+# v0.4.0 host94/gates and real health sample passed; owner restart host-untested; see current docs. Draft only.
+# v0.4.0 current health feature NOT host-validated; earlier v0.3.0 passes below historical.
+# DRAFT v0.3.0: host gates and real sample workflow passed; see INTEGRATION_RESULTS.md. Nothing submitted.
+# v0.3.0 change-evidence feature: NOT host-validated. Prior host claims below are historical v0.2.1.
+# Catalog entry draft: plugin-catalog/lastgood.yaml
+# NOT READY TO SUBMIT. Nothing is to be pushed, posted or submitted
+# Draft until you upload and paste the commit SHA. License: MIT.
+# Real host/interactive results: INTEGRATION_RESULTS.md.
+# Sources: hermes-agent docs (plugin catalog + catalog submission) and
+# the Hermes v0.22.7 source read on Nov 7, 2026.
+
+name: lastgood
+description: >-
+  LastGood: know which checks passed on which tested state, and what
+  restoring files won't undo. Preset checks (file opens, words present,
+  files exist, page loads) run after write_file/patch in opted-in
+  projects and on demand; results are PASS/FAIL/UNKNOWN with a content
+  fingerprint so changed files mark old results stale. /lastgood blame
+  shows where checks first failed plus bounded configured-string presence deltas, not causality. A ledger lists recognised tool calls a
+  file rollback won't undo, without storing their arguments.
+  Disclosure: the optional url_loads check fetches the http(s) address
+  you configure. No shell commands, credentials or background processes.
+  Refuses a home folder, drive/filesystem root or system folder as the
+  project, and explains invalid setups with the accepted check types.
+repo: https://github.com/Dr-Enuf/lastgood
+sha: TODO  # fill in the exact 40-hex commit after GitHub upload, never a branch/tag
+license: MIT
+tier: community
+category: tools
+maintainer: Kenneth Ausmus (Dr-Enuf)
+capabilities:
+  tools:
+    - lastgood_check
+    - lastgood_status
+    - lastgood_blame
+    - lastgood_report
+    - lastgood_setup
+  hooks:
+    - pre_tool_call
+    - post_tool_call
+  env_vars: []
+# Only Hermes 0.22.7 interfaces were read; v0.2.0 host checks passed (historical); v0.3.0 host gates pass; model edit PASS/PASS/FAIL, real interactive user slash rollback + explicit fresh PASS; automatic/model-driven recovery unproven.
+requires_hermes: ">=0.22.7"
+version: "0.4.1"  # host-validated and live-tested 2026-11-09; owner-restart untested

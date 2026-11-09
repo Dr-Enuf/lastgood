@@ -1,0 +1,10 @@
+{
+  "plugin/lastgood/__init__.py": "612edd08b9994d73313677f280052a5a0ecdd6a028bb4611a6ab8899728f4656",
+  "plugin/lastgood/changeview.py": "4a9b9b44e782389bf8395cf5f3d52506dd982e0bc87765f3cbda2340663a1bb2",
+  "plugin/lastgood/checks.py": "58d309f0505dad8b4ccdeaf1dda8a358df1c2214048a00bfa5a537bdfb0228bc",
+  "plugin/lastgood/core.py": "0839bf70e281ba80ba5e22d7d33111962273d73a5188d0765700639d2aa2a114",
+  "plugin/lastgood/health.py": "b148f31ca90da0a3978b5b61b1768fd9ca69d56417e11218fe02151cfde20c96",
+  "plugin/lastgood/plugin.yaml": "555403a41a7d7a3c714df133f9a425ae09d95d3208cf28b04ea7298b58af2837",
+  "plugin/lastgood/schemas.py": "b7e17b79fb736c313e56f7f0abacbc2fb1a16f4b55c277cfcead8b6ec444b223",
+  "plugin/lastgood/tools.py": "a01d8ffb9c2f9736bf09243c32ab33dc9ef3b1fadbd7b58c4d08c38c6ad7645d"
+}

@@ -1,0 +1,11 @@
+{
+  "hermes_home": "<TEST_ROOT>/v030-host-20261107-1352/home",
+  "agent": "<USER_HOME>/.hermes/hermes-agent",
+  "python": "<TEST_ROOT>/integration-20261107-1134/home/installs/5d84843bd80c30ab/environments/16a99e1393bb4f8db608203b95b846b5/venv/bin/python",
+  "project": "<TEST_ROOT>/v041-live-20261109-142403/standin-home",
+  "env": {
+    "HOME": "<TEST_ROOT>/v041-live-20261109-142403/standin-home",
+    "USERPROFILE": "<TEST_ROOT>/v041-live-20261109-142403/standin-home"
+  },
+  "limit": 90
+}

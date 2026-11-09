@@ -1,0 +1,39 @@
+LastGood v0.4.1 live PTY test ? Monday Nov 9, 2026, ~2:24?2:36 PM EST
+Plugin source set f5454db89818c3f80e9ece7d788f816ca7ee059136abea85edb699dd9df94282 (isolated home plugins/lastgood, version 0.4.1).
+Isolated HERMES_HOME: <TEST_ROOT>/v030-host-20261107-1352/home
+Work: <TEST_ROOT>/v041-live-20261109-142403
+Freshness before launch: venv_is_current true. No provisioning text in either session.
+Isolated config: agent.run_budget_seconds set 100 -> 120 (backup at <TEST_ROOT>/v041-live-20261109-142403/backups/config.yaml.before). Model gemma4-12b-64k:latest at http://127.0.0.1:11434/v1. One model attempt, no retry.
+
+(a) TOO_BROAD ? PASS
+  Launch --in stand-in folder <TEST_ROOT>/v041-live-20261109-142403/standin-home with HOME/USERPROFILE pointed at that folder (not Kenny's real home).
+  /lastgood check -> Tested step #1: UNKNOWN
+  "LastGood refused to check here: .../standin-home is your home folder, which is too broad to be one project. Start Hermes in a dedicated project folder..."
+  See session-a/a-check.txt
+
+(b) Invalid config guidance ? PASS
+  Dedicated project with invented-field lastgood-config.json.
+  /lastgood check -> Tested step #1: UNKNOWN
+  "lastgood-config.json is not valid: check #1 has no \"type\" field. Accepted check types: file_opens {path}, text_present {path, text}, files_exist {paths}, url_loads {url, optional text}. Minimal valid ... calculator.py ... /lastgood setup ..."
+  See session-b/b-invalid-check.txt
+
+(c) setup + check PASS ? PASS
+  /lastgood setup opens calculator.py -> Saved 1 check(s) to .../project/lastgood-config.json
+  /lastgood check -> Tested step #2: PASS
+  "PASS file_opens: calculator.py has no Python syntax errors."
+  See session-b/b-setup.txt and b-check-pass.txt
+
+(d) One short local-model edit + hook auto-check ? PASS (hook recorded PASS)
+  Request: add subtract(a, b) to calculator.py only.
+  calculator.py afterwards contains def subtract(a, b): return a - b (see project/calculator.py vs calculator.py.before).
+  /lastgood status after the turn:
+    Runtime callbacks: CALLBACKS_OBSERVED (pre=4, post=4); config=VALID; completed=PASS at 2026-11-09T19:36:53+00:00 (2:36:53 PM EST);
+    last_hook tool=patch; Now: PASS (current)
+    #1 UNKNOWN stale (invalid config)
+    #2 PASS stale (explicit check before edit)
+    #3 PASS current after patch
+  See session-b/b-status-readable.txt and b-status.txt
+
+ANOMALY: the driver/helper treated the still-visible footer prompt as "ready" during the model turn (model_wait=prompt) and queued /lastgood status while the agent was still working. No second model request was sent. The model did finish and the hook result above is from the completed turn, not a timeout. b-status.txt is large because it captured the working spinner, then the status output.
+
+No provisioning. Kenny's real homes, backend 9119, test-bot-1, and <WINDOWS_USER_HOME>\lastgood-config.json were not used as the project root.

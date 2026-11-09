@@ -1,0 +1,5 @@
+Plugin Doctor: 
+<TEST_ROOT>/integration-20261107-1134/source/plugin/lastgood
+  manifest: lastgood 0.2.0 (standalone)
+  OK: runtime discovery, manifest parsing, import, and registration passed
+  registrations: 5 tool(s), 2 hook(s)

@@ -1,0 +1,5 @@
+SENSITIVE_SYMLINK UNKNOWN UNKNOWN []
+RETENTION records=108 compact=935165 disk=1040791 limit=1048576
+QUOTED_ASSIGNMENT [None] stored=False
+FIXTURES /tmp/lastgood-v3-probe-il405upf
+UNPERSISTED_UNKNOWN_GAP gap_result=UNKNOWN gap_id=None next_changes=[]

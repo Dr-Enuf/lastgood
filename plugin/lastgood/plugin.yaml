@@ -1,0 +1,23 @@
+name: lastgood
+version: 0.4.1
+description: >-
+  LastGood: know which checks passed on which tested state, and what
+  restoring files won't undo. Runs preset checks you pick (file still
+  opens, words still present, important files exist, page still loads)
+  after file edits and on demand, records PASS/FAIL/UNKNOWN with a content
+  fingerprint so stale results are marked stale, shows where checks first
+  failed, lists recognised tool calls a file rollback won't undo (without
+  storing their arguments), and writes a one-file HTML Proof Report.
+author: LastGood contributors
+# v0.4.1 project-root guard + config guidance: box-only; host validation NOT RUN.
+# Host passes recorded for v0.4.0/v0.2.1 do not cover this version.
+requires_hermes: ">=0.22.7"
+provides_tools:
+  - lastgood_check
+  - lastgood_status
+  - lastgood_blame
+  - lastgood_report
+  - lastgood_setup
+provides_hooks:
+  - pre_tool_call
+  - post_tool_call

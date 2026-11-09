@@ -1,0 +1,85 @@
+                                                                                                                                          
+ 
+
+── ⠼ Working… · ↓ 1.5k tok ───────────────────────────────────────────────────────────────────────────────────── Add a subtract(a, b) function that returns a… 
+─
+
+☤ ❯ type to redirect this turn · Tab queues it for after
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+─
+
+ ☤ gemma4-12b-64k:latest · ~13.6K/65.5K · [██░░░░░░░░] ~21% · ◎ 80.2% · ◷ 4.8s · ↑ 62 t/s · 28s · ⏲ 25s · ✓ 0s        enter interrupt · tab queue · ctrl+c stop
+ 
+────────────────────────────────────────
+
+ Queue · 1 queued · /queue list · Ctrl+R collapse                                                                                                              
+ 
+
+ 1. /lastgood status                                                                                                                                           
+ 
+
+── ⠼ Working… · ↓ 1.5k tok ───────────────────────────────────────────────────────────────────────────────────── Add a subtract(a, b) function that returns a… 
+─
+
+☤ ❯ type to redirect this turn · Tab queues it for after
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+─
+
+ ☤ gemma4-12b-64k:latest · ~13.6K/65.5K · [██░░░░░░░░] ~21% · ◎ 80.2% · ◷ 4.8s · ↑ 62 t/s · 28s · ⏲ 25s · ✓ 0s        enter interrupt · tab queue · ctrl+c stop
+ 
+
+
+─ 25.7s · edited 1 file +3 -0 · read 1 file · searched 1 path · 2:36 PM
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────── Add a subtract(a, b) function that returns a… 
+─
+
+❯ Summarize what's in this folder
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+─
+
+ ☤ gemma4-12b-64k:latest · ~13.6K/65.5K · [██░░░░░░░░] ~21% · ◎ 80.2% · ◷ 4.8s · ↑ 62 t/s · 28s · ⏲ 25s · ✓ 0s · …42403/project  / commands · @ files · ! shell
+ 
+
+
+⚙️  /lastgood status
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────── Add a subtract(a, b) function that returns a… 
+─
+
+❯ Summarize what's in this folder
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+─
+
+ ☤ gemma4-12b-64k:latest · ~13.6K/65.5K · [██░░░░░░░░] ~21% · ◎ 80.2% · ◷ 4.8s · ↑ 62 t/s · 28s · ⏲ 25s · ✓ 0s · …42403/project  / commands · @ files · ! shell
+ 
+LastGood — <TEST_ROOT>/v041-live-20261109-142403/project
+
+Runtime callbacks: CALLBACKS_OBSERVED (pre=4, post=4); config=VALID; completed=PASS at 2026-11-09T19:36:53+00:00; attempt=2026-11-09T19:36:53+00:00; check_error=none; callback_error=none at never; last_hook=2026-11-09T19:36:53+00:00 tool=patch; collection=no dropped updates observed; registration is not delivery proof
+
+Now: PASS (current)
+
+  #1 UNKNOWN stale   checked via /lastgood
+
+  #2 PASS    stale   checked via /lastgood
+
+  #3 PASS    current after patch
+
+Last passing tested step: #3 (current). To go back, use /rollback to pick a checkpoint from before the failure, then /lastgood check.
+
+LastGood step numbers are not Hermes checkpoint numbers.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────── Add a subtract(a, b) function that returns a… 
+─
+
+❯ Summarize what's in this folder
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+─
+
+ ☤ gemma4-12b-64k:latest · ~13.6K/65.5K · [██░░░░░░░░] ~21% · ◎ 80.2% · ◷ 4.8s · ↑ 62 t/s · 28s · ⏲ 25s · ✓ 0s · …42403/project  / commands · @ files · ! shell
+ 

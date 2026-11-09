@@ -1,0 +1,1 @@
+{"diagnostic": "FAIL", "storage": "UNKNOWN", "full_return_unchanged_after_worker": true, "existing_FAIL_index_byte_identical": true, "normal_check_lane_unchanged": true, "private_payload_absent": true, "callback_error_in_actual_slash_and_HTML": true, "remaining_temp_probes": 0}

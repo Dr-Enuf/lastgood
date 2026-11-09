@@ -1,0 +1,17 @@
+❯ /lastgood check
+ 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ctx -- · [░░░░░░░░░░] -- · 1s · ⏲ 0s · ~/lastgood-tests/v041-live-20261109-142403/project             / commands · @ files · ! shell ❯ Summarize what's in this folder
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ctx -- · [░░░░░░░░░░] -- · 1s · ⏲ 0s · ~/lastgood-tests/v041-live-20261109-142403/project             / commands · @ files · ! shell 
+ 
+⚙️  /lastgood check
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ Summarize what's in this folder
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ctx -- · [░░░░░░░░░░] -- · 1s · ⏲ 0s · ~/lastgood-tests/v041-live-20261109-142403/project             / commands · @ files · ! shell Tested step #1: UNKNOWN
+  Setup problem: lastgood-config.json is not valid: check #1 has no "type" field. Accepted check types: file_opens {path}, text_present {path, text}, files_exist {paths}, url_loads {url, optional text}. Minimal valid lastgood-config.json: {"checks": [{"type": "file_opens", "path": "calculator.py"}]}. Easiest fix: run /lastgood setup opens <file> (or /lastgood setup words <file> <words>), or call the lastgood_setup tool, instead of writing the file by hand.
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ Summarize what's in this folder
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ☤ gemma4-12b-64k:latest · ctx -- · [░░░░░░░░░░] -- · 1s · ⏲ 0s · ~/lastgood-tests/v041-live-20261109-142403/project             / commands · @ files · ! shell 
