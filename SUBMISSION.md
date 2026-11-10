@@ -43,7 +43,7 @@ Nothing posted, pushed or submitted. This review does not require an action.
 ## What passed — v0.4.0
 
 - **94 unique tests** on the box and installed Hermes Python 3.14.9.
-- Hermes v0.22.7 doctor: **5 tools, 2 hooks**. Validate: **15 gates**, no
+- Hermes Agent v0.23.0 doctor: **5 tools, 2 hooks**. Validate: **15 gates**, no
   warnings. Real PluginManager harness: PASS. Exact source-set identity:
   `23cf5460d6c8e94c3b84a630e7e37e136bb81e1d5d4e96d98390b238fa68b1c2`.
 - Independent audit and targeted recheck passed after two diagnostic
@@ -105,4 +105,4 @@ arbitrary diffs. Only adjacent stable same-config/session observations compare;
 lost storage disables deltas until explicit baseline. No causal inference,
 saved-state/checkpoint mapping or automatic recovery. Pattern redaction is not
 universal: never configure secrets as invariants. Index retention is 200 records /
-1 MiB; this does not cap the ledger. Only Hermes v0.22.7 was host-tested.
+1 MiB; this does not cap the ledger. Host-tested on Hermes Agent v0.22.7 (early interactive runs) and v0.23.0 (v0.4.0/v0.4.1 validation and demo).

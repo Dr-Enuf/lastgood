@@ -3,7 +3,7 @@
 ## What passed — v0.4.0
 
 - **94 unique tests** on the box and installed Hermes Python 3.14.9.
-- Hermes v0.22.7 doctor: **5 tools, 2 hooks**. Validate: **15 gates**, no
+- Hermes Agent v0.23.0 doctor: **5 tools, 2 hooks**. Validate: **15 gates**, no
   warnings. Real PluginManager harness: PASS. Exact source-set identity:
   `23cf5460d6c8e94c3b84a630e7e37e136bb81e1d5d4e96d98390b238fa68b1c2`.
 - Independent audit and targeted recheck passed after two diagnostic

@@ -12,7 +12,7 @@
 # Draft until you upload and paste the commit SHA. License: MIT.
 # Real host/interactive results: INTEGRATION_RESULTS.md.
 # Sources: hermes-agent docs (plugin catalog + catalog submission) and
-# the Hermes v0.22.7 source read on Nov 7, 2026.
+# the Hermes v0.22.7 source (b200f5bc) and the v0.23.0 checkout (2bd378ed1b8d) used from Nov 7, 2026, 1:23 PM ET.
 
 name: lastgood
 description: >-
@@ -27,6 +27,8 @@ description: >-
   you configure. No shell commands, credentials or background processes.
   Refuses a home folder, drive/filesystem root or system folder as the
   project, and explains invalid setups with the accepted check types.
+  Host-tested on Hermes Agent v0.22.7 (early interactive runs) and
+  v0.23.0 (v0.4.0/v0.4.1 validation and demo).
 repo: https://github.com/Dr-Enuf/lastgood
 sha: TODO  # fill in the exact 40-hex commit after GitHub upload, never a branch/tag
 license: MIT
@@ -44,6 +46,6 @@ capabilities:
     - pre_tool_call
     - post_tool_call
   env_vars: []
-# Only Hermes 0.22.7 interfaces were read; v0.2.0 host checks passed (historical); v0.3.0 host gates pass; model edit PASS/PASS/FAIL, real interactive user slash rollback + explicit fresh PASS; automatic/model-driven recovery unproven.
+# Host-tested on Hermes Agent v0.22.7 (early interactive runs) and v0.23.0 (v0.4.0/v0.4.1 validation and demo). Interfaces originally read from v0.22.7 (b200f5bc). v0.2.0 host checks passed (historical); v0.3.0 host gates pass; model edit PASS/PASS/FAIL, real interactive user slash rollback + explicit fresh PASS; automatic/model-driven recovery unproven.
 requires_hermes: ">=0.22.7"
 version: "0.4.1"  # host-validated and live-tested 2026-11-09; owner-restart untested

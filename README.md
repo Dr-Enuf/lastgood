@@ -33,6 +33,8 @@ It is **not** a save/restore engine and it does not run shell commands.
 
 Requires Hermes Agent **0.22.7** or newer.
 
+Host-tested on Hermes Agent v0.22.7 (early interactive runs) and v0.23.0 (v0.4.0/v0.4.1 validation and demo).
+
 ## The four check types
 
 Put them in `lastgood-config.json` in the project folder, or let `/lastgood setup`

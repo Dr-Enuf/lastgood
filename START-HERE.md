@@ -15,7 +15,7 @@ LastGood still records whether the checks you picked still hold after file edits
 
 - **114 unique tests** on the box (Python 3.13.5, ResourceWarning as error, 0 skipped) and on Hermes Python 3.14.9 in WSL (114, 0 skipped).
 - Native Windows (`py -3`, Python 3.12.10): **114 ran, 0 failed, 4 skipped**. The four skips are symlink tests that cannot run without symlink privilege; that is intended. (An earlier native run failed one restore-freshness test because Windows `write_text` added CRLF; that was a test-only fix, plugin hash unchanged.)
-- Hermes v0.22.7 doctor: **5 tools, 2 hooks**, manifest `lastgood 0.4.1`. Validate: **15/15 gates**, no warnings. Real PluginManager harness: PASS. Isolated-home freshness was true; no provisioning in these launches.
+- Hermes Agent v0.23.0 doctor: **5 tools, 2 hooks**, manifest `lastgood 0.4.1`. Validate: **15/15 gates**, no warnings. Real PluginManager harness: PASS. Isolated-home freshness was true; no provisioning in these launches.
 - Independent review of v0.4.1 passed (no false PASS, no guard bypass); four small follow-ups were fixed before host/live.
 - **Live PTY sample** (isolated test home, local Ollama `gemma4-12b-64k:latest`, not Kenny’s real home):
   - (a) Session folder set to a stand-in home folder → `/lastgood check` UNKNOWN, “too broad… dedicated project folder”.
@@ -34,7 +34,7 @@ Open [the actual health/removal report](REPORT-ACTUAL-v0.4.0.html).
 ## What passed earlier — v0.4.0 (historical; not this code)
 
 - **94 unique tests** on the box and installed Hermes Python 3.14.9.
-- Hermes v0.22.7 doctor: **5 tools, 2 hooks**. Validate: **15 gates**, no
+- Hermes Agent v0.23.0 doctor: **5 tools, 2 hooks**. Validate: **15 gates**, no
   warnings. Real PluginManager harness: PASS. Exact source-set identity:
   `23cf5460d6c8e94c3b84a630e7e37e136bb81e1d5d4e96d98390b238fa68b1c2`.
 - Independent audit and targeted recheck passed after two diagnostic
@@ -96,7 +96,7 @@ arbitrary diffs. Only adjacent stable same-config/session observations compare;
 lost storage disables deltas until explicit baseline. No causal inference,
 saved-state/checkpoint mapping or automatic recovery. Pattern redaction is not
 universal: never configure secrets as invariants. Index retention is 200 records /
-1 MiB; this does not cap the ledger. Only Hermes v0.22.7 was host-tested.
+1 MiB; this does not cap the ledger. Host-tested on Hermes Agent v0.22.7 (early interactive runs) and v0.23.0 (v0.4.0/v0.4.1 validation and demo).
 
 ## Runtime provisioning disclosure
 
