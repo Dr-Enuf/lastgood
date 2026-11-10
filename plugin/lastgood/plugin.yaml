@@ -10,7 +10,7 @@ description: >-
   storing their arguments), and writes a one-file HTML Proof Report.
 author: LastGood contributors
 # v0.4.1 project-root guard + config guidance: host validation RUN Nov 9, 2026
-# (Hermes v0.22.7 doctor OK, validate 15/15, 114 tests PASS, live PTY sample PASS).
+# (Hermes Agent v0.23.0 doctor OK, validate 15/15, 114 tests PASS, live PTY sample PASS).
 # Comment-only fix applied by Muse at freeze; no code change.
 requires_hermes: ">=0.22.7"
 provides_tools:
