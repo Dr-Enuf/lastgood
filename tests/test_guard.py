@@ -165,7 +165,11 @@ class TestConfigGuidance(Base):
 
     def test_schema_matches_validator(self):
         items = schemas.LASTGOOD_SETUP["parameters"]["properties"]["checks"]["items"]
-        self.assertEqual(items["properties"]["type"]["enum"], list(C.CHECK_TYPES))
+        # The file format still accepts url_loads. The model-facing tool does not offer it.
+        self.assertEqual(items["properties"]["type"]["enum"],
+                         [t for t in C.CHECK_TYPES if t != "url_loads"])
+        self.assertIn("url_loads", C.CHECK_TYPES)
+        self.assertIn("refuses", schemas.LASTGOOD_SETUP["description"])
         self.assertIs(items["additionalProperties"], False)
         self.assertEqual(set(items["properties"]), set().union(*C.CHECK_FIELDS.values()))
         self.assertIn("lastgood_setup", schemas.LASTGOOD_CHECK["description"])

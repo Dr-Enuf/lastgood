@@ -1,3 +1,5 @@
+# v0.4.2 (Nov 11, 2026): catalog-review security fixes. Host doctor/validate for 0.4.2
+# is not claimed here. The 0.4.1 host notes below are historical.
 # v0.4.1 (Nov 9, 2026): host-validated and live-tested (doctor 5 tools/2 hooks, validate 15/15,
 # harness PASS, 114 tests; native Windows 114/0 fail/4 symlink skips). Live PTY: TOO_BROAD,
 # invalid-config guidance, setup+check PASS, one local-model patch auto-check PASS.
@@ -23,8 +25,7 @@ description: >-
   fingerprint so changed files mark old results stale. /lastgood blame
   shows where checks first failed plus bounded configured-string presence deltas, not causality. A ledger lists recognised tool calls a
   file rollback won't undo, without storing their arguments.
-  Disclosure: the optional url_loads check fetches the http(s) address
-  you configure. No shell commands, credentials or background processes.
+  Disclosure: the optional url_loads check fetches the http(s) address you configure (link-local/metadata refused). No shell commands, credentials or background processes.
   Refuses a home folder, drive/filesystem root or system folder as the
   project, and explains invalid setups with the accepted check types.
   Host-tested on Hermes Agent v0.22.7 (early interactive runs) and
@@ -48,4 +49,4 @@ capabilities:
   env_vars: []
 # Host-tested on Hermes Agent v0.22.7 (early interactive runs) and v0.23.0 (v0.4.0/v0.4.1 validation and demo). Interfaces originally read from v0.22.7 (b200f5bc). v0.2.0 host checks passed (historical); v0.3.0 host gates pass; model edit PASS/PASS/FAIL, real interactive user slash rollback + explicit fresh PASS; automatic/model-driven recovery unproven.
 requires_hermes: ">=0.22.7"
-version: "0.4.1"  # host-validated and live-tested 2026-11-09; owner-restart untested
+version: "0.4.2"  # catalog-review security fixes; host doctor/validate for this version not yet re-run

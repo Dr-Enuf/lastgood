@@ -124,7 +124,7 @@ class TestRuntimeHealth(Base):
             self.assertEqual(H.read(self.project)['hook_activity'],'UNKNOWN')
 
     def test_doctor_skips_remote_calls_and_is_bounded(self):
-        tools.save_setup(self.project,{'checks':[{'type':'url_loads','url':'http://127.0.0.1:1/'}]})
+        tools.save_setup(self.project,{'checks':[{'type':'url_loads','url':'http://127.0.0.1:1/'}]}, from_user=True)
         with patch.object(C,'_check_url_loads',side_effect=AssertionError('must not call remote')):
             d=tools.doctor(self.project,budget=.15)
         self.assertEqual(d['checks']['result'],'UNKNOWN')
