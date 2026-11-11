@@ -24,6 +24,13 @@ Every check returns PASS, FAIL or UNKNOWN:
 Paths must stay inside the project folder (no absolute paths, no "..",
 no symlink that resolves outside). There is deliberately NO shell-command
 check type.
+
+url_loads fetches only the http(s) address in the config. The host is resolved
+once; every A/AAAA result is checked, including IPv4-mapped IPv6, and the
+connection is opened to an address that passed that check. The same check runs
+on every redirect hop. Link-local, cloud-metadata and unspecified addresses are
+always refused. Other private ranges are refused unless the user turned on
+allow_private_urls. Loopback stays allowed.
 """
 
 from __future__ import annotations
@@ -31,7 +38,10 @@ from __future__ import annotations
 from . import changeview as CV
 
 import csv
+import errno
 import hashlib
+import http.client
+import ipaddress
 import json
 import os
 import re
@@ -294,16 +304,329 @@ def _check_files_exist(c: dict, project: Path, deadline: float) -> CheckResult:
     return CheckResult("files_exist", PASS, f"All {len(c['paths'])} important file(s) exist.", list(c["paths"]))
 
 
+# Addresses that are never fetched, on the first request and every redirect hop.
+# Loopback stays allowed: checking a server on this computer is the point.
+# Other private ranges need the user-only allow_private_urls plugin setting.
+_LINK_LOCAL_V4 = ipaddress.ip_network("169.254.0.0/16")
+_PRIVATE_V4 = (
+    ipaddress.ip_network("10.0.0.0/8"),
+    ipaddress.ip_network("172.16.0.0/12"),
+    ipaddress.ip_network("192.168.0.0/16"),
+)
+_ULA_V6 = ipaddress.ip_network("fc00::/7")
+_METADATA_V4 = ipaddress.ip_address("169.254.169.254")
+_METADATA_V6 = ipaddress.ip_address("fd00:ec2::254")
+_PRIVATE_SETTING = "allow_private_urls"
+_PRIVATE_GETTER = None
+
+
+class _AddressRefused(urllib.error.URLError):
+    """The address must not be fetched. reason is a short category, not page content."""
+
+
+class _PolicyError(OSError):
+    """Raised from a socket connect when the peer is not the validated address."""
+
+
+def set_private_url_config_getter(getter) -> None:
+    """Point url checks at Hermes' plugin settings. None uses the config file."""
+    global _PRIVATE_GETTER
+    _PRIVATE_GETTER = getter
+
+
+def _as_bool(value) -> bool:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().strip("\"'").lower() in {"1", "true", "yes", "on"}
+    if type(value) is int:
+        return value == 1
+    return False
+
+
+def _yaml_plugin_bool(text: str, plugin: str, key: str) -> bool:
+    """True only when plugins.entries.<plugin>.settings.<key> is a true scalar.
+
+    Anything ambiguous (tabs, flow style, a different plugin) stays false.
+    """
+    wanted = ("plugins", "entries", plugin, "settings", key)
+    stack: list[tuple[int, str]] = []
+    found = False
+    for raw_line in text.splitlines():
+        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
+            continue
+        indent_text = raw_line[:len(raw_line) - len(raw_line.lstrip(" \t"))]
+        if "\t" in indent_text:
+            return False
+        indent = len(indent_text)
+        line = raw_line.strip()
+        if line.startswith("- "):
+            continue
+        if ":" not in line:
+            continue
+        name, _, rest = line.partition(":")
+        name = name.strip().strip("\"'")
+        if not name or any(ch in name for ch in " {}[],"):
+            continue
+        rest = rest.strip()
+        if rest and not rest.startswith(("'", '"', "|", ">")):
+            rest = rest.split(" #", 1)[0].strip()
+        while stack and stack[-1][0] >= indent:
+            stack.pop()
+        path = tuple(item for _, item in stack) + (name,)
+        scalar = rest not in ("", "|", ">", "|-", ">-", "|+", ">+")
+        if path == wanted and scalar:
+            found = _as_bool(rest)
+            continue
+        # One-line form: settings: {allow_private_urls: true}
+        if (path == wanted[:-1] and rest.startswith("{") and rest.endswith("}")):
+            for part in rest[1:-1].split(","):
+                if ":" not in part:
+                    continue
+                item_key, _, item_value = part.partition(":")
+                if item_key.strip().strip("\"'") == key:
+                    found = _as_bool(item_value.strip())
+            continue
+        if not scalar:
+            stack.append((indent, name))
+    return found
+
+
+def private_urls_allowed() -> bool:
+    """User opt-in for private-network page checks. Default off. Fail closed."""
+    getter = _PRIVATE_GETTER
+    if getter is not None:
+        try:
+            return _as_bool(getter())
+        except Exception:
+            return False
+    try:
+        from . import tools as plugin_tools
+    except ImportError:
+        import tools as plugin_tools  # type: ignore
+    try:
+        home = plugin_tools.hermes_home()
+    except Exception:
+        return False
+    for name in ("config.yaml", "config.yml"):
+        path = Path(home) / name
+        try:
+            if not path.is_file():
+                continue
+            if path.stat().st_size > 2 * 1024 * 1024:
+                return False
+            return _yaml_plugin_bool(path.read_text(encoding="utf-8-sig"), "lastgood", _PRIVATE_SETTING)
+        except OSError:
+            return False
+    return False
+
+
+def _canonical_ip(ip):
+    """Unwrap IPv4-mapped IPv6 (::ffff:169.254.169.254 is the IPv4 metadata address)."""
+    if isinstance(ip, ipaddress.IPv6Address):
+        mapped = ip.ipv4_mapped
+        if mapped is not None:
+            return mapped
+    return ip
+
+
+def _block_reason(ip, allow_private: bool) -> str | None:
+    """Why this one address must not be fetched, or None when it may."""
+    ip = _canonical_ip(ip)
+    if ip.is_unspecified:
+        return "unspecified address"
+    if ip == _METADATA_V4 or ip == _METADATA_V6:
+        return "link-local or cloud-metadata address"
+    if isinstance(ip, ipaddress.IPv4Address):
+        if ip in _LINK_LOCAL_V4 or ip.is_link_local:
+            return "link-local or cloud-metadata address"
+    elif ip.is_link_local:
+        return "link-local or cloud-metadata address"
+    if ip.is_loopback:
+        return None
+    private = any(ip in net for net in _PRIVATE_V4) if isinstance(ip, ipaddress.IPv4Address) else ip in _ULA_V6
+    if private and not allow_private:
+        return "private-network address"
+    return None
+
+
+def _blocked_reason(ips, allow_private: bool) -> str | None:
+    """Refuse the host when any A/AAAA result is blocked (not only the first)."""
+    reasons = [reason for reason in (_block_reason(ip, allow_private) for ip in ips) if reason]
+    if not reasons:
+        return None
+    for kind in ("unspecified address", "link-local or cloud-metadata address", "private-network address"):
+        if kind in reasons:
+            return kind
+    return reasons[0]
+
+
+def _addresses_for(host: str, port: int):
+    """Every stream address for host, each looked up once and unwrapped."""
+    try:
+        infos = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
+    except socket.gaierror as exc:
+        raise urllib.error.URLError(exc) from exc
+    found = []
+    seen = set()
+    for info in infos:
+        raw = str(info[4][0]).split("%", 1)[0]
+        try:
+            ip = _canonical_ip(ipaddress.ip_address(raw))
+        except ValueError as exc:
+            raise _AddressRefused("unrecognised address") from exc
+        if ip in seen:
+            continue
+        seen.add(ip)
+        found.append(ip)
+    if not found:
+        raise urllib.error.URLError("host did not resolve")
+    return found
+
+
+def _refusal_detail(shown: str, reason: str) -> str:
+    if reason == "private-network address":
+        return (f"{shown} was refused (private-network address). "
+                "Private ranges stay off unless you turn on allow_private_urls "
+                "in LastGood's plugin settings. Nothing was fetched.")
+    return (f"{shown} was refused ({reason}). "
+            "Link-local and cloud-metadata addresses are never fetched.")
+
+
+def _policy_text(exc) -> str | None:
+    reason = getattr(exc, "reason", None)
+    if isinstance(exc, _AddressRefused):
+        return str(exc.reason)
+    if isinstance(reason, _AddressRefused):
+        return str(reason.reason)
+    if isinstance(reason, _PolicyError):
+        return str(reason)
+    return None
+
+
+def _pinned_connection(pin: str, allow_private: bool, https: bool):
+    """HTTP(S) connection that dials the IP already validated, not the name again."""
+    base = http.client.HTTPSConnection if https else http.client.HTTPConnection
+
+    class _Conn(base):
+        def connect(self):
+            if self._tunnel_host:
+                raise _PolicyError("proxy tunnels are not used for url checks")
+            self.sock = socket.create_connection((pin, self.port), self.timeout, self.source_address)
+            try:
+                self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            except OSError as exc:
+                if exc.errno != errno.ENOPROTOOPT:
+                    raise
+            try:
+                peer = _canonical_ip(ipaddress.ip_address(str(self.sock.getpeername()[0]).split("%", 1)[0]))
+                pin_ip = _canonical_ip(ipaddress.ip_address(pin))
+            except ValueError as exc:
+                self.sock.close()
+                self.sock = None
+                raise _PolicyError("connected address was not an IP address") from exc
+            if peer != pin_ip:
+                self.sock.close()
+                self.sock = None
+                raise _PolicyError("connected address did not match the validated address")
+            reason = _block_reason(peer, allow_private)
+            if reason:
+                self.sock.close()
+                self.sock = None
+                raise _PolicyError(reason)
+            if https:
+                # server_hostname is the name the user typed (or the IP literal).
+                # None is rejected when certificate checking is on, including for
+                # https://127.0.0.1/. The TCP peer is still the pinned address.
+                self.sock = self._context.wrap_socket(self.sock, server_hostname=self.host)
+
+    return _Conn
+
+
+def _open_pinned(handler, req, https: bool):
+    if req.has_proxy():
+        raise _AddressRefused("proxies are not used for url checks")
+    parts = urllib.parse.urlsplit(req.full_url)
+    if parts.scheme not in ("http", "https"):
+        raise _AddressRefused("only an http(s) address is fetched")
+    if parts.username or parts.password:
+        raise _AddressRefused("url must not contain a username or password")
+    host = parts.hostname
+    if not host:
+        raise _AddressRefused("url has no host")
+    port = parts.port if parts.port is not None else (443 if parts.scheme == "https" else 80)
+    allow_private = private_urls_allowed()
+    ips = _addresses_for(host, port)
+    blocked = _blocked_reason(ips, allow_private)
+    if blocked:
+        raise _AddressRefused(blocked)
+    last = None
+    for ip in ips:
+        conn_cls = _pinned_connection(str(ip), allow_private, https)
+        try:
+            kwargs = {"context": handler._context} if https else {}
+            return handler.do_open(conn_cls, req, **kwargs)
+        except _AddressRefused:
+            raise
+        except urllib.error.URLError as exc:
+            policy = _policy_text(exc)
+            if policy:
+                raise _AddressRefused(policy) from exc
+            last = exc
+    if last is not None:
+        raise last
+    raise urllib.error.URLError("host did not resolve")
+
+
+class _PinnedHTTPHandler(urllib.request.HTTPHandler):
+    def http_open(self, req):
+        return _open_pinned(self, req, False)
+
+
+class _PinnedHTTPSHandler(urllib.request.HTTPSHandler):
+    def https_open(self, req):
+        return _open_pinned(self, req, True)
+
+
 class _SafeRedirect(urllib.request.HTTPRedirectHandler):
     max_redirections = 5
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        if urllib.parse.urlsplit(newurl).scheme not in ("http", "https"):
-            raise urllib.error.URLError("redirect to a non-http(s) address was refused")
+        parts = urllib.parse.urlsplit(newurl)
+        if parts.scheme not in ("http", "https"):
+            raise _AddressRefused("redirect to a non-http(s) address was refused")
+        if parts.username or parts.password:
+            raise _AddressRefused("redirect containing a username or password was refused")
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
+    def http_error_302(self, req, fp, code, msg, headers):
+        # Checked again when the next hop is opened. This stops file/ftp redirects
+        # before urllib turns them into a fetch of a different scheme.
+        newurl = headers.get("location") or headers.get("uri") or ""
+        parts = urllib.parse.urlsplit(urllib.parse.urljoin(req.full_url, newurl))
+        if newurl and parts.scheme not in ("http", "https"):
+            try:
+                fp.read()
+                fp.close()
+            except Exception:
+                pass
+            raise _AddressRefused("redirect to a non-http(s) address was refused")
+        if parts.username or parts.password:
+            try:
+                fp.read()
+                fp.close()
+            except Exception:
+                pass
+            raise _AddressRefused("redirect containing a username or password was refused")
+        return super().http_error_302(req, fp, code, msg, headers)
 
-_OPENER = urllib.request.build_opener(_SafeRedirect)
+
+_OPENER = urllib.request.build_opener(
+    urllib.request.ProxyHandler({}),
+    _SafeRedirect(),
+    _PinnedHTTPHandler(),
+    _PinnedHTTPSHandler(),
+)
 
 
 def redact_url(url: str) -> str:
@@ -330,7 +653,7 @@ def _check_url_loads(c: dict, project: Path, deadline: float) -> CheckResult:
             break
         timeout = max(0.1, min(c.get("timeout", URL_TIMEOUT_CAP), URL_TIMEOUT_CAP, remaining))
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "LastGood/0.2"})
+            req = urllib.request.Request(url, headers={"User-Agent": "LastGood/0.4.2"})
             with _OPENER.open(req, timeout=timeout) as resp:
                 status = getattr(resp, "status", 200)
                 body = resp.read(MAX_URL_BODY_BYTES + 1) if needle else b""
@@ -344,11 +667,16 @@ def _check_url_loads(c: dict, project: Path, deadline: float) -> CheckResult:
                 return CheckResult("url_loads", FAIL, f"{shown} loads but “{needle}” is not on the page.")
             extra = f" and contains “{needle}”" if needle else ""
             return CheckResult("url_loads", PASS, f"{shown} loads (status {status}){extra}.")
+        except _AddressRefused as exc:
+            return CheckResult("url_loads", UNKNOWN, _refusal_detail(shown, str(exc.reason)))
         except urllib.error.HTTPError as exc:  # the server answered: a real result
             code = exc.code
             exc.close()
             return CheckResult("url_loads", FAIL, f"{shown} answered with status {code}.")
         except (urllib.error.URLError, socket.timeout, TimeoutError, OSError) as exc:
+            policy = _policy_text(exc)
+            if policy:
+                return CheckResult("url_loads", UNKNOWN, _refusal_detail(shown, policy))
             reason = getattr(exc, "reason", exc)
             last = CheckResult("url_loads", UNKNOWN, f"{shown} could not be reached ({type(reason).__name__}); not counted as broken content.")
         except Exception as exc:

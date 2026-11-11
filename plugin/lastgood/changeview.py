@@ -39,8 +39,12 @@ def sanitize(value):
 
 def sensitive_path(raw):
     parts = PurePosixPath(str(raw).replace('\\', '/').lower()).parts
-    return any(p.startswith('.env') or p in ('.ssh', 'credentials', 'credentials.json',
-               'secrets.json', 'secrets.yaml', 'id_rsa', 'id_ed25519') or
+    # auth.json / auth.lock / webhook_subscriptions.json / mcp-tokens are Hermes
+    # control files. mcp-tokens matches both the directory and a file of that name.
+    names = {'.ssh', 'credentials', 'credentials.json', 'secrets.json', 'secrets.yaml',
+             'id_rsa', 'id_ed25519', 'auth.json', 'auth.lock',
+             'webhook_subscriptions.json', 'mcp-tokens'}
+    return any(p.startswith('.env') or p in names or
                p.endswith(('.pem', '.key', '.p12', '.pfx')) for p in parts)
 
 

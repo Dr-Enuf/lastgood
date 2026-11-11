@@ -14,6 +14,7 @@ Where things live
   * project:      the session's working folder from Hermes'
     ``agent.runtime_cwd.resolve_agent_cwd()``; falls back to TERMINAL_CWD,
     then os.getcwd(). A tool call may pass an explicit "path".
+    The Hermes home folder, and anything inside it, is refused.
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ import tempfile
 import hashlib
 import json
 import os
+import sys
 import time
 import threading
 from pathlib import Path
@@ -43,18 +45,53 @@ TOOL_BUDGET_SECONDS = 20.0
 
 # ---------------------------------------------------------------- locations
 
+def _platform_default_hermes_home() -> str:
+    """Same default Hermes uses when HERMES_HOME is unset and its helper is absent."""
+    if sys.platform == "win32":
+        local = os.environ.get("LOCALAPPDATA", "").strip()
+        base = Path(local) if local else Path.home() / "AppData" / "Local"
+        return str(base / "hermes")
+    return str(Path.home() / ".hermes")
+
+
+def _hermes_home_from_helper():
+    """Hermes' own resolver when the agent is installed (profile override, env, default)."""
+    for mod_name, attr in (("hermes_constants", "get_hermes_home"),
+                           ("hermes_cli.config", "get_hermes_home")):
+        try:
+            module = __import__(mod_name, fromlist=[attr])
+            value = getattr(module, attr)()
+        except Exception:
+            continue
+        if value:
+            return value
+    return None
+
+
+def hermes_home() -> Path:
+    """Hermes home, realpath'd: helper, else HERMES_HOME, else the platform default.
+
+    This is the folder that holds credentials and control files. It is never a
+    LastGood project, and neither is anything inside it.
+    """
+    raw = _hermes_home_from_helper()
+    if not raw:
+        env = os.environ.get("HERMES_HOME", "").strip()
+        raw = env or _platform_default_hermes_home()
+    return Path(os.path.realpath(os.path.expanduser(str(raw))))
+
+
 def data_root(read_only=False) -> Path:
     override = os.environ.get("LASTGOOD_DATA_DIR")
     if override:
         return Path(override)
     if read_only:
-        return Path(os.environ.get("HERMES_HOME") or str(Path.home() / ".hermes")) / "plugin-data" / PLUGIN_NAME
+        return hermes_home() / "plugin-data" / PLUGIN_NAME
     try:
         from plugins.plugin_storage import plugin_data_dir  # Hermes public helper
         return Path(plugin_data_dir(PLUGIN_NAME))
     except Exception:
-        home = os.environ.get("HERMES_HOME") or str(Path.home() / ".hermes")
-        return Path(home) / "plugin-data" / PLUGIN_NAME
+        return hermes_home() / "plugin-data" / PLUGIN_NAME
 
 
 def _session_cwd() -> Path:
@@ -74,6 +111,17 @@ def resolve_project(path=None) -> Path:
     real = Path(os.path.realpath(raw))
     if not real.is_dir():
         raise NotADirectoryError(f"project folder not found: {raw}")
+    home = hermes_home()
+    try:
+        inside = os.path.commonpath([str(home), str(real)]) == str(home)
+    except ValueError:
+        inside = False
+    if inside:
+        raise ValueError(
+            f"{real} is the Hermes home folder, or inside it ({home}). "
+            "That folder holds credentials and control files, so it cannot be a LastGood project. "
+            "Start Hermes in a dedicated project folder."
+        )
     return real
 
 
@@ -327,7 +375,7 @@ def write_report(project: Path, ids=None) -> dict:
     return {"report": str(out), "tested_steps": len(records), "ledger_entries": len(ledger)}
 
 
-def save_setup(project: Path, config) -> dict:
+def save_setup(project: Path, config, *, from_user=False) -> dict:
     reason = C.broad_root_reason(project)
     if reason:
         raise C.ConfigError(C.broad_root_message(reason))
@@ -335,6 +383,14 @@ def save_setup(project: Path, config) -> dict:
         checks = C.validate_config(config)
     except C.ConfigError as exc:
         raise C.ConfigError(f"{exc}. Nothing was saved. {C.CONFIG_HELP}") from None
+    # The model reaches this through lastgood_setup (from_user stays false).
+    # A page check is only saved from the slash command or a file the user edits.
+    if not from_user and any(c.get("type") == "url_loads" for c in checks):
+        raise C.ConfigError(
+            "url_loads checks can only be added by you, with /lastgood setup "
+            "or by editing lastgood-config.json. The lastgood_setup tool cannot add one. "
+            "Nothing was saved."
+        )
     target = Path(project) / C.CONFIG_NAME
     if target.is_symlink():
         raise C.ConfigError(f"{C.CONFIG_NAME} is a symlink; refusing to overwrite it")

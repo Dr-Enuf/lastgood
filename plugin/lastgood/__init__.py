@@ -117,8 +117,12 @@ HELP = """LastGood commands:
   /lastgood setup opens <file>              check the file still opens
   /lastgood setup json {"checks": [...]}    full setup (up to 5 checks)
 Checks live in lastgood-config.json in the project folder (start Hermes in a
-dedicated project folder, not your home folder or a drive root).
+dedicated project folder, not your home folder, the Hermes home folder, or a drive root).
 Accepted check types: file_opens, text_present, files_exist, url_loads.
+url_loads fetches the http(s) address you configure (link-local/metadata refused).
+The lastgood_setup tool cannot add url_loads; use /lastgood setup json or edit the file.
+Private-network addresses stay off unless you turn on allow_private_urls in LastGood's
+plugin settings. Loopback (a server on this computer) stays allowed.
 LastGood step numbers are not Hermes checkpoint numbers; restore with /rollback."""
 
 
@@ -157,7 +161,7 @@ def _setup_cmd(project, rest: str) -> str:
         config = {"checks": [{"type": "file_opens", "path": tail.strip()}]}
     else:
         return HELP
-    out = tools.save_setup(project, config)
+    out = tools.save_setup(project, config, from_user=True)
     return (f"Saved {len(out['checks'])} check(s) to {out['saved']}.\n"
             "Run /lastgood check to test the current files.")
 
@@ -215,6 +219,9 @@ def register(ctx):
         from . import schemas
     except ImportError:  # flat import fallback
         import schemas  # type: ignore
+    if hasattr(ctx, "get_config"):
+        C.set_private_url_config_getter(
+            lambda: ctx.get_config("allow_private_urls", default=False))
     for name, schema, handler in (
         ("lastgood_check", schemas.LASTGOOD_CHECK, tools.lastgood_check),
         ("lastgood_status", schemas.LASTGOOD_STATUS, tools.lastgood_status),

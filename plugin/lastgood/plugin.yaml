@@ -1,5 +1,5 @@
 name: lastgood
-version: 0.4.1
+version: 0.4.2
 description: >-
   LastGood: know which checks passed on which tested state, and what
   restoring files won't undo. Runs preset checks you pick (file still
@@ -8,11 +8,21 @@ description: >-
   fingerprint so stale results are marked stale, shows where checks first
   failed, lists recognised tool calls a file rollback won't undo (without
   storing their arguments), and writes a one-file HTML Proof Report.
+  The optional page check fetches the http(s) address you configure (link-local/metadata refused).
 author: LastGood contributors
-# v0.4.1 project-root guard + config guidance: host validation RUN Nov 9, 2026
-# (Hermes Agent v0.23.0 doctor OK, validate 15/15, 114 tests PASS, live PTY sample PASS).
-# Comment-only fix applied by Muse at freeze; no code change.
+# v0.4.2 catalog-review fixes (address checks on every hop, user-only url_loads,
+# Hermes-home project refusal, extra sensitive filenames). requires_hermes unchanged.
 requires_hermes: ">=0.22.7"
+config_schema:
+  allow_private_urls:
+    type: bool
+    default: false
+    label: Allow private-network page checks
+    description: >-
+      When on, a url_loads check you configured may fetch private-network
+      addresses (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, fc00::/7).
+      Link-local and cloud-metadata addresses stay refused, including after
+      redirects. Only you can change this in plugin settings; the model cannot.
 provides_tools:
   - lastgood_check
   - lastgood_status

@@ -13,7 +13,7 @@ undo, without storing their arguments.
 
 It is **not** a save/restore engine and it does not run shell commands.
 
-- Version: **0.4.1**
+- Version: **0.4.2**
 - License: [MIT](LICENSE) — Copyright (c) 2026 Kenneth Ausmus
 - Repository: https://github.com/Dr-Enuf/lastgood
 - Maintainer: Kenneth Ausmus (Dr-Enuf)
@@ -45,10 +45,24 @@ write that file:
 | `file_opens` | The file exists, is readable, and still parses (JSON, CSV, Python, HTML markers, or non-empty UTF-8). |
 | `text_present` | The given words still appear in the file. |
 | `files_exist` | Each listed file is still there. |
-| `url_loads` | An `http://` or `https://` address still loads (optional words on the page). |
+| `url_loads` | The http(s) address you configure still loads (optional words on the page). LastGood fetches that address (link-local/metadata refused). |
 
 Unknown fields or a missing `type` make the whole setup UNKNOWN — LastGood will
 not guess. There is no command-running check.
+
+A page check (`url_loads`) can only be added by you: `/lastgood setup json {"checks":[...]}`
+or by editing `lastgood-config.json`. The agent's `lastgood_setup` tool cannot add one.
+It fetches the http(s) address you configure (link-local/metadata refused).
+
+Link-local and cloud-metadata addresses are never fetched, including after a redirect.
+That covers `169.254.0.0/16` (including `169.254.169.254`), `fe80::/10`, `fd00:ec2::254`,
+and unspecified addresses (`0.0.0.0`, `::`), including the IPv4-mapped forms.
+Addresses on a private network (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fc00::/7`)
+stay refused unless you turn on **allow_private_urls** in LastGood's plugin settings
+(or set `plugins.entries.lastgood.settings.allow_private_urls: true` in the Hermes
+`config.yaml`). The model cannot turn that on. A server on this computer (loopback)
+stays allowed. LastGood also refuses the Hermes home folder, and anything inside it,
+as the project.
 
 Minimal example:
 
@@ -81,6 +95,10 @@ fields, it stays UNKNOWN and lists the four types above.
 - Health (`/lastgood status` / `/lastgood doctor`) observes callbacks in the
   current plugin process. It is not a security guarantee. Owner-restart of the
   plugin-owning Hermes runtime was not re-tested on the host for 0.4.1.
+- Version 0.4.2 is the catalog-review security fix. The Linux standalone suite
+  for this change is 134 tests, 0 failures (114 before it). Windows was not
+  re-run. `hermes plugins validate` was not run: the installable Hermes
+  (PyPI hermes-agent 0.19.0) has no `validate` subcommand.
 - Native Windows test suite: 114 ran, 0 failed, **4 skipped** (symlink tests that
   need symlink privilege). Those skips are intended.
 - A live PTY helper once queued `/lastgood status` during a model spinner because

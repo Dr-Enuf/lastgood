@@ -10,11 +10,13 @@ LASTGOOD_CHECK = {
         "could not decide (page unreachable, time budget, bad setup). Checks come from "
         "lastgood-config.json in the project folder. LastGood also checks automatically "
         "after write_file/patch when that file exists. A tested step is NOT a Hermes "
-        "checkpoint; restoring is done with Hermes' /rollback. Do not write "
-        "lastgood-config.json by hand: use lastgood_setup. Its only format is "
+        "checkpoint; restoring is done with Hermes' /rollback. File checks use "
+        "lastgood_setup. Its format is "
         '{"checks": [{"type": "file_opens", "path": "app.py"}]} with type one of '
-        "file_opens, text_present, files_exist, url_loads (no other fields). LastGood "
-        "refuses a home folder or drive root as the project; work in a dedicated folder."
+        "file_opens, text_present, files_exist (no other fields). Do not add url_loads "
+        "with this tool; only the user can, via /lastgood setup or by editing the file. "
+        "A page check fetches the http(s) address they configure (link-local/metadata refused). "
+        "LastGood refuses a home folder, the Hermes home folder, or a drive root as the project."
     ),
     "parameters": {"type": "object", "properties": {
         "label": {"type": "string", "description": "Short name for this step, e.g. 'added login form'"},
@@ -52,20 +54,21 @@ LASTGOOD_REPORT = {
 LASTGOOD_SETUP = {
     "name": "lastgood_setup",
     "description": (
-        "Save the project's LastGood checks to lastgood-config.json (up to 5). Only call this "
-        "when the user has said what 'still works' means. Types: file_opens {path}; "
-        "text_present {path, text}; files_exist {paths}; url_loads {url, optional text}. "
-        "Paths must be inside the project folder. There is no command-running check. "
-        "No other fields are accepted (no name/description/verify/target)."
+        "Save the project's LastGood file checks to lastgood-config.json (up to 5). Only call "
+        "this when the user has said what 'still works' means. Types: file_opens {path}; "
+        "text_present {path, text}; files_exist {paths}. Do not add url_loads: this tool "
+        "refuses it. The user adds a page check with /lastgood setup or by editing "
+        "lastgood-config.json. Paths must be inside the project folder. There is no "
+        "command-running check. No other fields are accepted (no name/description/verify/target)."
     ),
     "parameters": {"type": "object", "properties": {
         "checks": {"type": "array", "maxItems": 5, "description": "The checks to save",
                    "items": {"type": "object", "required": ["type"], "additionalProperties": False,
                              "properties": {
                                  "type": {"type": "string", "enum": ["file_opens", "text_present",
-                                                                     "files_exist", "url_loads"]},
+                                                                     "files_exist"]},
                                  "path": {"type": "string", "description": "file_opens/text_present: file inside the project"},
-                                 "text": {"type": "string", "description": "text_present (required) / url_loads (optional): words that must be present"},
+                                 "text": {"type": "string", "description": "text_present: words that must be present"},
                                  "case_insensitive": {"type": "boolean"},
                                  "paths": {"type": "array", "items": {"type": "string"}, "description": "files_exist: files that must exist"},
                                  "url": {"type": "string", "description": "url_loads: http(s) address"},

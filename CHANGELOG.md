@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.2 — 2026-11-11 (catalog-review fixes)
+Linux standalone suite: 134 tests, 0 failures (was 114 before this change).
+Windows was not re-run. `hermes plugins validate` was not run: the Hermes
+build available here (PyPI hermes-agent 0.19.0) has no `validate` subcommand.
+- `url_loads` resolves every A/AAAA address and refuses link-local, cloud-metadata
+  (`169.254.0.0/16` including `169.254.169.254`, `fe80::/10`, `fd00:ec2::254`), and
+  unspecified (`0.0.0.0`, `::`) addresses, including IPv4-mapped IPv6, on the first
+  request and every redirect hop. It connects to the address it validated.
+- Private ranges (`10/8`, `172.16/12`, `192.168/16`, `fc00::/7`) stay refused unless
+  the user turns on the `allow_private_urls` plugin setting. `lastgood_setup` refuses
+  `url_loads`; `/lastgood setup` and a hand-edited `lastgood-config.json` can still add one.
+- The Hermes home folder, and anything inside it, cannot be a project.
+- `text_present` also refuses `auth.json`, `auth.lock`, `webhook_subscriptions.json`,
+  and `mcp-tokens` (file or directory).
+
 ## 0.4.1 — 2026-11-09 (host-validated and live-tested; owner-restart still host-untested)
 - Test-only Windows newline fix: every test `Path.write_text` now uses `newline=""` so a restore
   writes the same bytes as on POSIX (no CRLF translation). Plugin code unchanged.
